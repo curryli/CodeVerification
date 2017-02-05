@@ -1,0 +1,1 @@
+tesseract 123.jpg result -l chi_sim 
