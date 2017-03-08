@@ -9,9 +9,15 @@ import subprocess
 #由于都是数字    
 #对于识别成字母的 采用该表进行修正    
 rep={'O':'0',    
-    'I':'1','L':'1',    
+    'I':'1',
+    'L':'1',    
     'Z':'2',    
-    'S':'5'    
+    'S':'5',
+    'Q':'0',
+    '}':'1',
+    'E':'6',
+    ']':'1',
+    'B':'8'
     };  
     
     
@@ -35,7 +41,7 @@ def	retrieve_text(scratch_text_name_root):
 def  getverify1(name):          
     #打开图片    
     im = Image.open(name)    
-    call_tesseract('sd1_new.jpg', scratch_text_name_root)
+    call_tesseract(name, scratch_text_name_root)
     text = retrieve_text(scratch_text_name_root)
     print text  
     #识别对吗    

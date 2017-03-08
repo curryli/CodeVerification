@@ -24,31 +24,19 @@ if __name__ == '__main__':
     WebDriverWait(driver, 10).until(lambda the_driver: the_driver.find_element_by_id("fwtpyzm").is_displayed())
     elem = driver.find_element_by_id("fwtpyzm")
     
-    action = ActionChains(driver).move_to_element(elem)
-    action.context_click(elem)
-    action.send_keys(Keys.ARROW_RIGHT)
+ 
     time.sleep(1)
-    action.send_keys(Keys.ARROW_DOWN)
-    time.sleep(1)
-    action.send_keys(Keys.ARROW_DOWN)
-    time.sleep(1)
-    action.send_keys('v')
-    time.sleep(1)
-    action.send_keys(Keys.ENTER)
-    action.perform()
+    print "Done"
+    driver.save_screenshot('tmp.png')   
     
-#    time.sleep(1)
-#    print "Done"
-#    driver.save_screenshot('tmp.png')   
-#    
-#    
-#    location = elem.location
-#    print location['x'], location['y'] 
-#    
-#    rangle = (location['x'], location['y'], location['x']+107, location['y']+30)
-#    i = Image.open('tmp.png')
-#    frame4 = i.crop(rangle)
-#    frame4.save('authcode.png')
+    
+    location = elem.location
+    print location['x'], location['y'] 
+    
+    rangle = (location['x'], location['y'], location['x']+107, location['y']+30)
+    i = Image.open('tmp.png')
+    frame4 = i.crop(rangle)
+    frame4.save('authcode.png')
     
     print "Done"
     
