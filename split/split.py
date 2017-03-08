@@ -39,7 +39,7 @@ def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
      return child_img_list
      
 if __name__ == '__main__':
-    child_img_list = cut_pic('b.jpg')
+    child_img_list = cut_pic('sd1_new.jpg')
     
      #保存切割的图片
     for i in range(0,len(child_img_list)):
