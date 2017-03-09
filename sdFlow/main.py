@@ -104,7 +104,7 @@ def getverify1(name):
     #print text  
     #识别对吗    
     text = text.strip()    
-    text = text.upper();      
+    #text = text.upper();      
     for r in rep:    
         text = text.replace(r,rep[r])     
     #out.save(text+'.jpg')    
