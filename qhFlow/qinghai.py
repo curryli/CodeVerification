@@ -198,7 +198,7 @@ def getverify1(name):
     return text
     
 if __name__=='__main__':
-    img_name = "38"
+    img_name = "34"
 #    print getverify1(img_name + ".jpg")
     filterByPIL(img_name)
     result1 = getverify1(img_name + "_t1.jpg")
