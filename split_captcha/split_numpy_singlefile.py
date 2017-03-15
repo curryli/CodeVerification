@@ -3,15 +3,13 @@ from PIL import Image,ImageEnhance,ImageFilter
 import numpy as np
 from scipy.misc import imread
 import random, string
-import os
-import os.path
 
 def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
      filepath = filename
-     print filename
+     
      im = Image.open(filepath)
-     #imgSize = im.size #
-     #print imgSize   #(130, 50)
+     imgSize = im.size #
+     print imgSize   #(130, 50)
      imgry = im.convert('L')  #灰度化
      
        
@@ -43,8 +41,8 @@ def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
      #print reversedImg
      colSumList = np.asarray(reversedarray.sum(axis=0))[0]  #每一列的元素和
      index_filter = [i for i in range(len(colSumList)) if colSumList[i] <5]
-     #blank_length = len(index_filter)
-     #print "blank_length is " + str(blank_length)
+     blank_length = len(index_filter)
+     print "blank_length is " + str(blank_length)
      for col in index_filter:
          reversedarray[:,col:col+1] = 0    #作为分隔的空白列
      np.savetxt("aa.txt", reversedarray, fmt="%d")
@@ -66,15 +64,15 @@ def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
              roi_cols_list.append(tmp_list)
              tmp_list = []
      roi_cols_list.append(tmp_list)
-#     for i in roi_cols_list:
-#         print len(i)
+     for i in roi_cols_list:
+         print len(i)
      #print roi_cols_list
      
      
      roi_rows_list = []
-     for k in range(len(roi_cols_list)):
-         print roi_cols_list[k]
-         start_col = roi_cols_list[k][0]
+     for i in range(len(roi_cols_list)):
+         print roi_cols_list[i]
+         start_col = roi_cols_list[i][0]
          start_dict = {}
          for j in range(50-roi_height):
              maxsum = reversedarray[j:j+roi_height, start_col:].sum()
@@ -104,21 +102,15 @@ def random_str(randomlength=8):
     return ''.join(a[:randomlength])    
      
 if __name__ == '__main__':
-    rootdir = 'createdImg/'
-    filelist = os.listdir(rootdir)
-    print len(filelist)
-    for i in range(0,len(filelist)):
-        filename = os.path.join(rootdir,filelist[i])
-        if os.path.isfile(filename):
-            child_img_list = cut_pic(filename)
-            #child_img_list = cut_pic('sd1.jpg')
-            cut_str = filename.split("_")[0]
-            print i
-            #print cut_str
-             #保存切割的图片
-            for j in range(0,len(child_img_list)):
-                #print child_img_list[i].size    #(28, 28)
-                child_img_list[j].save(r"singleImgs/%s_%s.jpg" % (cut_str[j],random_str(16)))
+    filename = 'Jr3a_1zyt.png'
+    child_img_list = cut_pic(filename)
+    #child_img_list = cut_pic('sd1.jpg')
+    cut_str = filename.split("_")[0]
+    print cut_str
+     #保存切割的图片
+    for i in range(0,len(child_img_list)):
+        #print child_img_list[i].size    #(28, 28)
+        child_img_list[i].save("%s_%s.jpg" % (cut_str[i],random_str(8)))
 
  
     

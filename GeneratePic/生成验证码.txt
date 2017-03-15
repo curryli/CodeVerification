@@ -1,1 +1,3 @@
 生成验证码
+
+修改字符长度在  package org.patchca.word RandomWordFactory 里设置
