@@ -59,7 +59,7 @@ def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
              tmp_list.append(index_roi[i])
          else:
              #print "tmp_list is ", tmp_list
-             while len(tmp_list)>40:
+             while len(tmp_list)>roi_weight*2:
                  roi_cols_list.append(tmp_list[0:roi_weight])
                  tmp_list = tmp_list[roi_weight:len(tmp_list)]
                 
