@@ -116,9 +116,10 @@ if __name__ == '__main__':
             print cut_str
             #print cut_str
              #保存切割的图片
-            for j in range(0,len(child_img_list)):
+        if(len(child_img_list)==len(cut_str)): 
+            for i in range(0,len(child_img_list)):
                 #print child_img_list[i].size    #(28, 28)
-                child_img_list[j].save(r"singleImgs/%s_%s.jpg" % (cut_str[j],random_str(16)))
+                child_img_list[i].save("%s_%s.jpg" % (cut_str[i],random_str(10)))
 
  
     
