@@ -112,8 +112,8 @@ if __name__ == '__main__':
         if os.path.isfile(filename):
             child_img_list = cut_pic(filename)
             #child_img_list = cut_pic('sd1.jpg')
-            cut_str = filename.split("_")[0]
-            print i
+            cut_str = filename.split(r"/")[1].split("_")[0]
+            print cut_str
             #print cut_str
              #保存切割的图片
             for j in range(0,len(child_img_list)):
