@@ -119,7 +119,7 @@ if __name__ == '__main__':
         if(len(child_img_list)==len(cut_str)): 
             for i in range(0,len(child_img_list)):
                 #print child_img_list[i].size    #(28, 28)
-                child_img_list[i].save("%s_%s.jpg" % (cut_str[i],random_str(10)))
+                child_img_list[i].save("singleImgs/%s_%s.jpg" % (cut_str[i],random_str(10)))
 
  
     
