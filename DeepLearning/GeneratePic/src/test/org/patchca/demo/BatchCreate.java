@@ -12,10 +12,10 @@ import org.patchca.service.ConfigurableCaptchaService;
 import org.patchca.utils.encoder.EncoderHelper;
 
 public class BatchCreate {
-	public static int N=1000;
+	public static int N=2000;
 	
 	public static String getRandomString(int length) { //length表示生成字符串的长度  
-	    String base = "abcdefghijklmnopqrstuvwxyz0123456789";     
+	    String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";     
 	    Random random = new Random();     
 	    StringBuffer sb = new StringBuffer();     
 	    for (int i = 0; i < length; i++) {     
@@ -35,7 +35,7 @@ public class BatchCreate {
 	        
 	        String createdStr = EncoderHelper.getChallangeImage(cs);
 	        //System.out.println(createdStr);
-	        String savename = "createdImg/" + createdStr.trim() + "_" + getRandomString(4) + ".png";
+	        String savename = "d://testPics//6//" + createdStr.trim() + "_" + getRandomString(4) + ".png";
 	        File file =new File(savename);
 	        if(!file.exists())
 	          {       

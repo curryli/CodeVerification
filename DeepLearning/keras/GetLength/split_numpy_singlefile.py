@@ -24,8 +24,9 @@ def cut_pic(filename):  #图片处理（灰度化，二值化，切割图片）
          else:
              table.append(1)
      biPic = imgry.point(table,'1')
-     #biPic.show()
-      
+
+     biPic = biPic.filter(ImageFilter.MedianFilter())
+     biPic.show()
      
      bi_w = biPic.width    
      bi_h = biPic.height
@@ -102,7 +103,7 @@ def random_str(randomlength=8):
     return ''.join(a[:randomlength])    
      
 if __name__ == '__main__':
-    filename = '19.jpg'
+    filename = 'JHwmAN.png'
     child_img_list = cut_pic(filename)
     #child_img_list = cut_pic('sd1.jpg')
     cut_str = filename.split("_")[0]
