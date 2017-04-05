@@ -118,10 +118,10 @@ def __CNN__(testdata,testlabel,traindata,trainlabel):
     #开始训练， show_accuracy在每次迭代后显示正确率 。  batch_size是每次带入训练的样本数目 ， nb_epoch 是迭代次数，  shuffle 是打乱样本随机。  
    # model.fit(data, label, batch_size=100, nb_epoch=10,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)  
   
-    model.fit(traindata, trainlabel, batch_size=50,nb_epoch=1000,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)
+    model.fit(traindata, trainlabel, batch_size=50,nb_epoch=20,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)
     time.sleep(0.1)     
     #设置测试评估参数，用测试集样本
-    WEIGHTS_FNAME = '3_cnn_weights.hdf'
+    WEIGHTS_FNAME = 'length_weights.hdf'
     model.save_weights(WEIGHTS_FNAME)    
     
     #设置测试评估参数，用测试集样本
@@ -133,8 +133,8 @@ def __CNN__(testdata,testlabel,traindata,trainlabel):
 
 
 if __name__ == '__main__':    
-    trainpath = r'D:/testPics/'
-    testpath = r'D:/testPics/'
+    trainpath = r'./TrainImgs/'
+    testpath = r'./ValidImgs/'
     testcount=__getnum__(testpath)
     traincount=__getnum__(trainpath)
     testdata,testlabel= __data_label__(testpath, testcount)
