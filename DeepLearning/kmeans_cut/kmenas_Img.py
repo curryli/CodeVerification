@@ -2,15 +2,15 @@
 from PIL import Image,ImageEnhance,ImageFilter
 import numpy as np
 from scipy.misc import imread
-import random, string
 import os
 import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans,DBSCAN
 from sklearn.datasets import make_blobs
-
+from sklearn import cluster 
+from sklearn import mixture
 
 def get_pic_array(filename):  #图片处理（灰度化，二值化，切割图片）
     filepath = filename
@@ -74,7 +74,19 @@ if __name__ == '__main__':
     print Xarray
     
     y_pred = KMeans(n_clusters=5,init='k-means++' , precompute_distances=True).fit_predict(Xarray)
+    #y_pred =cluster.SpectralClustering(n_clusters=5,eigen_solver='arpack',affinity="nearest_neighbors").fit_predict(Xarray)
+
+    #y_pred = DBSCAN().fit_predict(Xarray)
+    #y_pred = DBSCAN(eps = 0.1, min_samples = 10).fit_predict(Xarray)
+    #y_pred = cluster.AgglomerativeClustering(n_clusters=6, linkage='ward').fit_predict(Xarray)
+    #y_pred = cluster.AgglomerativeClustering(linkage='ward').fit_predict(Xarray)
+    #y_pred = cluster.Birch(n_clusters=6).fit_predict(Xarray)
+    #y_pred = cluster.AffinityPropagation(damping=.9, preference=-200).fit_predict(Xarray)
+    #y_pred = cluster.MeanShift( bin_seeding=True).fit_predict(Xarray)
+    
     plt.scatter(Xarray[:, 1], Xarray[:, 0], c=y_pred)
         
     #plt.show()
     plt.savefig('plt.png')
+    
+     
