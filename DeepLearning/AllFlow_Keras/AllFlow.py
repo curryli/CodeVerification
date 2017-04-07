@@ -11,7 +11,7 @@ from keras.layers.advanced_activations import PReLU
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.optimizers import SGD, Adadelta, Adagrad
 from keras.utils import np_utils, generic_utils
-
+from keras.models import model_from_json
 from keras import backend
 from PIL import Image,ImageEnhance,ImageFilter
 from scipy.misc import imread
@@ -196,42 +196,59 @@ def cnn_single(filename):
     single_result = model.predict_classes(testdata)
     return single_result
     
-
-if __name__ == '__main__':
-    testPic = 'imgs/test5.png'
-        
-    from keras.models import model_from_json
-    origin_img = cv2.imread("origin_img.png",0)
+def Img_to_Array(filename):
+    origin_img = cv2.imread(filename,0)
     origin_arr = np.asarray(origin_img,dtype="float32")
-    origin_data = np.empty((1,1,28,28),dtype="float32")
+    origin_data = np.empty((1,1,50,200),dtype="float32")
     origin_data[0,:,:,:] = origin_arr
     origin_data /= np.max(origin_data)
-    origin_data -= np.mean(origin_data)  
+    origin_data -= np.mean(origin_data) 
+    return origin_data
+
+if __name__ == '__main__':
+    testPic = 'test5.png'
+        
+    print "done1"
     
-    len_model = model_from_json(open('len_model_architecture.json').read())
+    len_model = model_from_json(open('Len_architecture_2.json').read())
     sgd = SGD(lr=0.05, decay=1e-6, momentum=0.9, nesterov=True)  
     len_model.compile(loss='categorical_crossentropy', optimizer=sgd,class_mode="categorical",metrics=['accuracy']) 
     
     #加载参数
-    LEN_WEIGHTS = 'length_Weights.hdf'
+    LEN_WEIGHTS = 'Len_weights_2.hdf'
     len_model.load_weights(LEN_WEIGHTS)    
-      
+     
+    print "done2"
+    
+    LenDict={0:4, 1:5, 2:6}
+    
     #print(model.predict(testdata))
-    Len_Img = len_model.predict_classes(origin_data)
+    
+    Len_Img = LenDict[len_model.predict_classes(Img_to_Array(testPic))[0]]
+    print "Len_Img: ", Len_Img 
     
     
     child_img_list = cut_pic(testPic, Len_Img)
   
+    
     for i in range(0,len(child_img_list)):
         child_img_list[i].save("sp%d.jpg" % i)
     print "Save Done"
     
+    
+    reversedDict={0:"0", 1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8", 9:"9", 
+             10:"a", 11:"b", 12:"c", 13:"d", 14:"e", 15:"f", 16:"g", 17:"h", 18:"i", 19:"j", 20:"k", 21:"l", 22:"m", 23:"n", 24:"o", 25:"p", 26:"q", 27:"r", 28:"s", 29:"t", 30:"u", 31:"v", 32:"w", 33:"x", 34:"y", 35:"z",
+             36:"A", 37:"B", 38:"C", 39:"D", 40:"E", 41:"F", 42:"G", 43:"H", 44:"I", 45:"J", 46:"K", 47:"L", 48:"M", 49:"N", 50:"O", 51:"P", 52:"Q", 53:"R", 54:"S", 55:"T", 56:"U", 57:"V", 58:"W", 59:"X", 60:"Y", 61:"Z"}
+    
+   
+        
     result = ""
     for i in range(0,len(child_img_list)):
         fname = ("sp%d.jpg" % i)
         imageprepare(fname)
-        result = result + str(cnn_single(fname))
+        result = result + reversedDict[cnn_single(fname)[0]]
     
-    print "result"
+    print result
+    print "done4"
     
     
