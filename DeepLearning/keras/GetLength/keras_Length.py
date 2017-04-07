@@ -74,14 +74,14 @@ def __CNN__(testdata,testlabel,traindata,trainlabel):
     #border_mode可以是valid或者full，具体看这里说明：http://deeplearning.net/software/theano/library/tensor/nnet/conv.html#theano.tensor.nnet.conv.conv2d  
     #激活函数用tanh  
     #你还可以在model.add(Activation('tanh'))后加上dropout的技巧: model.add(Dropout(0.5))  
-    model.add(Convolution2D(4, 5, 5, border_mode='valid', input_shape=(1,50,200)))  
+    model.add(Convolution2D(4, 7, 7, border_mode='valid', input_shape=(1,50,200)))  
     model.add(Activation('tanh'))  
       
       
     #第二个卷积层，8个卷积核，每个卷积核大小3*3。4表示输入的特征图个数，等于上一层的卷积核个数  
     #激活函数用tanh  
     #采用maxpooling，poolsize为(2,2)  
-    model.add(Convolution2D(8, 3, 3, border_mode='valid'))  
+    model.add(Convolution2D(8, 5, 5, border_mode='valid'))  
     model.add(Activation('tanh'))  
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
@@ -89,18 +89,35 @@ def __CNN__(testdata,testlabel,traindata,trainlabel):
     #第三个卷积层，16个卷积核，每个卷积核大小3*3  
     #激活函数用tanh  
     #采用maxpooling，poolsize为(2,2)  
+    model.add(Convolution2D(16,  5, 5, border_mode='valid'))  
+    model.add(Activation('tanh'))  
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    
+
+    #第4个卷积层，16个卷积核，每个卷积核大小3*3  
+    #激活函数用tanh  
+    #采用maxpooling，poolsize为(2,2)  
     model.add(Convolution2D(16,  3, 3, border_mode='valid'))  
     model.add(Activation('tanh'))  
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
-      
+	
+    #第5个卷积层，16个卷积核，每个卷积核大小3*3  
+    #激活函数用tanh  
+    #采用maxpooling，poolsize为(2,2)  
+    model.add(Convolution2D(16,  3, 3, border_mode='valid'))  
+    model.add(Activation('tanh'))  
+    model.add(Dropout(0.25))
+    
+    
     #全连接层，先将前一层输出的二维特征图flatten为一维的。  
     #Dense就是隐藏层。16就是上一层输出的特征图个数。4是根据每个卷积层计算出来的：(28-5+1)得到24,(24-3+1)/2得到11，(11-3+1)/2得到4  
     #全连接有128个神经元节点,初始化方式为normal  
     model.add(Flatten())  
     model.add(Dense(128, init='normal'))  
     model.add(Activation('tanh'))  
-    model.add(Dropout(0.25))  
+    #model.add(Dropout(0.25))  
       
     #Softmax分类，输出是10类别  
     model.add(Dense(3, init='normal'))  
@@ -118,11 +135,17 @@ def __CNN__(testdata,testlabel,traindata,trainlabel):
     #开始训练， show_accuracy在每次迭代后显示正确率 。  batch_size是每次带入训练的样本数目 ， nb_epoch 是迭代次数，  shuffle 是打乱样本随机。  
    # model.fit(data, label, batch_size=100, nb_epoch=10,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)  
   
-    model.fit(traindata, trainlabel, batch_size=50,nb_epoch=20,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)
+    model.fit(traindata, trainlabel, batch_size=50,nb_epoch=10,shuffle=True,verbose=1,show_accuracy=True,validation_split=0.2)
     time.sleep(0.1)     
     #设置测试评估参数，用测试集样本
-    WEIGHTS_FNAME = 'length_weights.hdf'
-    model.save_weights(WEIGHTS_FNAME)    
+    WEIGHTS_FNAME = 'Len_weights.hdf'
+    model.save_weights(WEIGHTS_FNAME)  
+    
+    Model_Name = 'Len_model.h5'
+    model.save(Model_Name) 
+    
+    json_string = model.to_json()  #等价于 json_string = model.get_config()  
+    open('Len_architecture.json','w').write(json_string)
     
     #设置测试评估参数，用测试集样本
 #    score = model.evaluate(testdata, testlabel, batch_size=50,verbose=2,show_accuracy=True)
