@@ -1,8 +1,8 @@
 # coding=utf-8
+from __future__ import division
 import cv2
 import os
 import numpy as np
-
 #导入各种用到的模块组件
 #from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
@@ -20,41 +20,10 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
-def imageprepare(fname):
-    """
-    This function returns the pixel values.
-    The imput is a png file location.
-    """
-    im = Image.open(fname).convert('L')
-    print "fname is " + fname
-    width = float(im.size[0])
-    height = float(im.size[1])
-    newImage = Image.new('L', (28, 28), (255)) #creates white canvas of 28x28 pixels
-    
-    if width > height: #check which dimension is bigger
-        #Width is bigger. Width becomes 20 pixels.
-        nheight = int(round((20.0/width*height),0)) #resize height according to ratio width
-        if (nheight == 0): #rare case but minimum is 1 pixel
-            nheight = 1  
-        # resize and sharpen
-        img = im.resize((20,nheight), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-        wtop = int(round(((28 - nheight)/2),0)) #caculate horizontal pozition
-        newImage.paste(img, (4, wtop)) #paste resized image on white canvas
-    else:
-        #Height is bigger. Heigth becomes 20 pixels. 
-        nwidth = int(round((20.0/height*width),0)) #resize width according to ratio height
-        if (nwidth == 0): #rare case but minimum is 1 pixel
-            nwidth = 1
-         # resize and sharpen
-        img = im.resize((nwidth,20), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-        wleft = int(round(((28 - nwidth)/2),0)) #caculate vertical pozition
-        newImage.paste(img, (wleft, 4)) #paste resized image on white canvas
-
-    newImage.save(fname)
-
+ 
 
 def get_pic_array(reversedarray):  #图片处理（灰度化，二值化，切割图片）
-    matrix_slice = reversedarray[:,0:200]
+    matrix_slice = reversedarray[:,0:Pic_Weigth]
     return np.array(matrix_slice)
    
 def get_split_list(reversedarray, split_N): 
@@ -70,31 +39,47 @@ def get_split_list(reversedarray, split_N):
 
     y_pred = KMeans(n_clusters= split_N, init='k-means++', precompute_distances=True).fit_predict(Xarray)
     X = Xarray[:, 1]
+     
+    Y = Pic_Height-Xarray[:, 0]
+    plt.scatter(X, Y, c=y_pred)
+    #print y_pred    
+    plt.xlim(0, Pic_Weigth)
+    plt.ylim(0, Pic_Height)
+    plt.show()
+    #plt.savefig('plt.png')
+    
+    
   
     y_pred = np.reshape(y_pred,(y_pred.shape[0],1))
     X = np.reshape(X,(X.shape[0],1))
 
     X_cluster = np.hstack((X, y_pred))
-    
+ 
+
     d={}                
     for x, y in X_cluster:
         d.setdefault(x, set())
         d[x].add(y)
-
-    dklist = d.keys()
+ 
+    dklist0 = d.keys()
+    dklist = sorted(dklist0)
+    #print dklist
+    
     tmp_list = []
     start = dklist[0]
+    #print "len", len(dklist)
     for i in range(2,len(dklist)):
         #print dklist[i], d[dklist[i]]
         if ( d[dklist[i]]!=d[dklist[i-1]]):  
             end = dklist[i-1]
-            if (end-start)<2:
+            if (end-start)<1:
                 continue
-            tmp_range = range(start, end)
+            tmp_range = range(start, end+1)
             tmp_list.append(tmp_range)
             start = dklist[i]
 
-    tmp_range = range(start, dklist[-1])
+    tmp_range = range(start, dklist[-1]+1)
+    #print tmp_range 
     tmp_list.append(tmp_range)
 
     return tmp_list
@@ -102,6 +87,10 @@ def get_split_list(reversedarray, split_N):
 def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割图片）
     filepath = filename
     im = Image.open(filepath)
+    Pic_Weigth = im.size[0]
+    Pic_Height = im.size[1]
+    print Pic_Weigth,Pic_Height
+
     imgry = im.convert('L')  # 灰度化
     
     ###################################
@@ -122,6 +111,7 @@ def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割
 
     bi_w = biPic.width
     bi_h = biPic.height
+    print "width is ", bi_w, "height is ", bi_h
 
     data = biPic.getdata()
     data = np.matrix(data, dtype='int32')
@@ -130,38 +120,24 @@ def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割
 
     reversedarray = 1 - imarray
 
-    colSumList = np.asarray(reversedarray.sum(axis=0))[0]  # 每一列的元素和
-    index_filter = [i for i in range(len(colSumList)) if colSumList[i] < 5]
-
-    for col in index_filter:
-        reversedarray[:, col:col + 1] = 0  # 作为分隔的空白列
+#    colSumList = np.asarray(reversedarray.sum(axis=0))[0]  # 每一列的元素和
+#    index_filter = [i for i in range(len(colSumList)) if colSumList[i] < 2]
+#
+#    for col in index_filter:
+#        reversedarray[:, col:col + 1] = 0  # 作为分隔的空白列
 
     roi_cols_list = get_split_list(reversedarray, split_N)
+    print roi_cols_list
    
-    roi_height = 42
-    roi_weight = 26
+    roi_rows_list = range(3,Pic_Height-3)
     
     child_img_list = []
-    roi_rows_list = []
-    badFlag = False
-    for k in range(len(roi_cols_list)):
-        if roi_cols_list[k]:
-            start_col = roi_cols_list[k][0]
-            start_dict = {}
-            for j in range(50 - roi_height):
-                maxsum = reversedarray[j:j + roi_height, start_col:].sum()
-                start_dict[maxsum] = j
-            start_row = start_dict[max(start_dict.keys())]
-
-            roi_rows_list.append(range(start_row, start_row + roi_height))
-        else:
-            badFlag = True
-
-    if not badFlag:
-        for i in range(len(roi_cols_list)):
+    
+    roi_weight = Pic_Weigth/4
+    for i in range(len(roi_cols_list)):
             if roi_cols_list[i]:
-                start_row = roi_rows_list[i][0]
-                end_row = start_row + roi_height
+                start_row = roi_rows_list[0]
+                end_row = roi_rows_list[-1]
                 col_margin = (roi_weight - len(roi_cols_list[i])) / 2
                 start_col = roi_cols_list[i][0] - col_margin
                 end_col = start_col + roi_weight
@@ -175,14 +151,26 @@ def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割
 
 
 def cnn_single(filename):
-    img = cv2.imread(filename,0)
+    img_tmp = cv2.imread(filename,0)
+     
+    w_tmp = img_tmp.shape[1]
+    h_tmp = img_tmp.shape[0]
+    
+    #img = cv2.resize(img_tmp, (28,28),interpolation=cv2.INTER_CUBIC)
+        
+    # 放缩图像
+    cal_fx = 28/w_tmp
+    cal_fy = 28/h_tmp
+    img = cv2.resize(img_tmp, (0,0), fx=cal_fx, fy=cal_fy, interpolation=cv2.INTER_CUBIC)
+ 
     arr = np.asarray(img,dtype="float32")
     testdata = np.empty((1,1,28,28),dtype="float32")
+    
     testdata[0,:,:,:] = arr
     testdata /= np.max(testdata)
     testdata -= np.mean(testdata)   
     
-    
+
     
     model = model_from_json(open('my_model_architecture.json').read())  
     
@@ -204,14 +192,14 @@ def cnn_single(filename):
 def Img_to_Array(filename):
     origin_img = cv2.imread(filename,0)
     origin_arr = np.asarray(origin_img,dtype="float32")
-    origin_data = np.empty((1,1,50,200),dtype="float32")
+    origin_data = np.empty((1,1,Pic_Height,Pic_Weigth),dtype="float32")
     origin_data[0,:,:,:] = origin_arr
     origin_data /= np.max(origin_data)
     origin_data -= np.mean(origin_data) 
     return origin_data
 
 if __name__ == '__main__':
-    testPic = 'test5.png'
+    testPic = '43.jpg'
         
     print "done1"
     
@@ -230,6 +218,7 @@ if __name__ == '__main__':
     #print(model.predict(testdata))
     
     Len_Img = LenDict[len_model.predict_classes(Img_to_Array(testPic))[0]]
+
     print "Len_Img: ", Len_Img 
     
     
@@ -250,9 +239,8 @@ if __name__ == '__main__':
     result = ""
     for i in range(0,len(child_img_list)):
         fname = ("sp%d.jpg" % i)
-        imageprepare(fname)
         result = result + reversedDict[cnn_single(fname)[0]]
-    
+ 
     print result
     print "done4"
     

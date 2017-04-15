@@ -21,8 +21,8 @@ from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
 
-Pic_Weigth = 60
-Pic_Height = 20
+Pic_Weigth = 200
+Pic_Height = 50
 
 
 
@@ -92,7 +92,12 @@ def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割
     filepath = filename
     im = Image.open(filepath)
     imgry = im.convert('L')  # 灰度化
-
+    
+    ###################################
+    imgry = imgry.filter(ImageFilter.MedianFilter())
+    imgry = imgry.filter(ImageFilter.MedianFilter())
+    #################################
+    
     # 二值化
     threshold = 120
     table = []
@@ -194,7 +199,7 @@ def Img_to_Array(filename):
     return origin_data
 
 if __name__ == '__main__':
-    testPic = 'qh3.jpg'
+    testPic = '43.jpg'
 #        
 #    print "done1"
 #    
