@@ -56,7 +56,7 @@ def get_pic_array(filename):  #图片处理（灰度化，二值化，切割图�
   
  
 if __name__ == '__main__':
-    pic_array = get_pic_array("imgs/bb3.png")
+    pic_array = get_pic_array("imgs/test5.png")
     print pic_array.shape
     print type(pic_array)
 

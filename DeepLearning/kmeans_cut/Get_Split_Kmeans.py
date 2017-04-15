@@ -115,7 +115,7 @@ def get_split_list(filename):
             
 
 if __name__ == '__main__':
-    print get_split_list("imgs/bb2.png") 
+    print get_split_list("imgs/test5.png") 
     print "Done"
        
  
