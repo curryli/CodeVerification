@@ -103,7 +103,11 @@ def cut_pic(filename, split_N):  # 图片处理（灰度化，二值化，切割
     filepath = filename
     im = Image.open(filepath)
     imgry = im.convert('L')  # 灰度化
-
+    
+    ###################################
+    imgry = imgry.filter(ImageFilter.MedianFilter())
+    #################################
+    
     # 二值化
     threshold = 120
     table = []
