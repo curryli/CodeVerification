@@ -2,7 +2,7 @@
 #导入三个模块
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import random
-import math
+
 '''基本功能'''
 _letter_cases = "abcdefghjkmnpqrstuvwxy" # 小写字母，去除可能干扰的i，l，o，z
 _upper_cases = _letter_cases.upper() # 大写字母
@@ -26,7 +26,7 @@ gene_char = gene_str[0]
 print gene_char 
      
 font_width, font_height =  font.getsize(gene_char)   
-print font_width, font_height
+#print font_width, font_height
 
 Pic_width = int(font_width*1.1)
 Pic_height = int(font_height*0.9)
@@ -42,7 +42,7 @@ draw = ImageDraw.Draw(image)
 #draw.text((0, -(Pic_height - font_height)), gene_char, font=font, fill=fontcolor)
 start_x = (Pic_width - font_width) / 3
 start_y = (Pic_height - font_height)
-print start_x,start_y
+#print start_x,start_y
 draw.text((start_x, start_y), gene_char, font=font, fill=fontcolor)
 #释放draw
 del draw
@@ -54,10 +54,10 @@ del draw
 rot = image.rotate(random.randint(-10,10),expand=0) #默认为0，表示剪裁掉伸到画板外面的部分
 fff = Image.new('RGBA',rot.size,(255,)*4)
 image = Image.composite(rot,fff,rot)
-print image.size
+#print image.size
 #image.save('2_2.png')
 image = image.resize((28,28))
-print image.size
+#print image.size
 image.save('2_2.png')
 
 
